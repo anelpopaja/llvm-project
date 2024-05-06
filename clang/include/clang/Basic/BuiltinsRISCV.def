@@ -18,7 +18,7 @@
 // Zbb extension
 TARGET_BUILTIN(__builtin_riscv_orc_b_32, "ZiZi", "nc", "zbb")
 TARGET_BUILTIN(__builtin_riscv_orc_b_64, "WiWi", "nc", "zbb,64bit")
-TARGET_BUILTIN(__builtin_riscv_clz_32, "ZiZi", "nc", "zbb")
+TARGET_BUILTIN(__builtin_riscv_clz_32, "ZiZi", "nc", "zbb|experimental-zbpbo")
 TARGET_BUILTIN(__builtin_riscv_clz_64, "WiWi", "nc", "zbb,64bit")
 TARGET_BUILTIN(__builtin_riscv_ctz_32, "ZiZi", "nc", "zbb")
 TARGET_BUILTIN(__builtin_riscv_ctz_64, "WiWi", "nc", "zbb,64bit")
@@ -46,8 +46,10 @@ TARGET_BUILTIN(__builtin_riscv_bfp_32, "ZiZiZi", "nc", "experimental-zbf")
 TARGET_BUILTIN(__builtin_riscv_bfp_64, "WiWiWi", "nc", "experimental-zbf,64bit")
 
 // Zbp extension
-TARGET_BUILTIN(__builtin_riscv_grev_32, "ZiZiZi", "nc", "experimental-zbp")
-TARGET_BUILTIN(__builtin_riscv_grev_64, "WiWiWi", "nc", "experimental-zbp,64bit")
+TARGET_BUILTIN(__builtin_riscv_grev_32, "ZiZiZi", "nc",
+               "experimental-zbp|experimental-zbpbo")
+TARGET_BUILTIN(__builtin_riscv_grev_64, "WiWiWi", "nc",
+               "experimental-zbp|experimental-zbpbo,64bit")
 TARGET_BUILTIN(__builtin_riscv_gorc_32, "ZiZiZi", "nc", "experimental-zbp")
 TARGET_BUILTIN(__builtin_riscv_gorc_64, "WiWiWi", "nc", "experimental-zbp,64bit")
 TARGET_BUILTIN(__builtin_riscv_shfl_32, "ZiZiZi", "nc", "experimental-zbp")
@@ -71,9 +73,11 @@ TARGET_BUILTIN(__builtin_riscv_crc32c_d, "LiLi", "nc", "experimental-zbr,64bit")
 
 // Zbt extension
 TARGET_BUILTIN(__builtin_riscv_fsl_32, "LiLiLiLi", "nc", "experimental-zbt")
-TARGET_BUILTIN(__builtin_riscv_fsr_32, "LiLiLiLi", "nc", "experimental-zbt")
+TARGET_BUILTIN(__builtin_riscv_fsr_32, "LiLiLiLi", "nc",
+               "experimental-zbt|experimental-zbpbo")
 TARGET_BUILTIN(__builtin_riscv_fsl_64, "WiWiWiWi", "nc", "experimental-zbt,64bit")
-TARGET_BUILTIN(__builtin_riscv_fsr_64, "WiWiWiWi", "nc", "experimental-zbt,64bit")
+TARGET_BUILTIN(__builtin_riscv_fsr_64, "WiWiWiWi", "nc",
+               "experimental-zbt|experimental-zbpbo,64bit")
 
 // Zbkb extension
 TARGET_BUILTIN(__builtin_riscv_brev8, "LiLi", "nc", "zbkb")

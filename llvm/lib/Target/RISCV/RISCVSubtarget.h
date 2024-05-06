@@ -60,6 +60,7 @@ private:
   bool HasStdExtZbr = false;
   bool HasStdExtZbs = false;
   bool HasStdExtZbt = false;
+  bool HasStdExtZbpbo = false;
   bool HasStdExtV = false;
   bool HasStdExtZve32x = false;
   bool HasStdExtZve32f = false;
@@ -164,6 +165,7 @@ public:
   bool hasStdExtZbf() const { return HasStdExtZbf; }
   bool hasStdExtZbm() const { return HasStdExtZbm; }
   bool hasStdExtZbp() const { return HasStdExtZbp; }
+  bool hasStdExtZbpbo() const { return HasStdExtZbpbo; }
   bool hasStdExtZbr() const { return HasStdExtZbr; }
   bool hasStdExtZbs() const { return HasStdExtZbs; }
   bool hasStdExtZbt() const { return HasStdExtZbt; }

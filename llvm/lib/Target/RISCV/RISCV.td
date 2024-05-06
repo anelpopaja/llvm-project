@@ -247,6 +247,41 @@ def HasStdExtZbcOrZbkc
                                    "'Zbc' (Carry-Less Multiplication) or "
                                    "'Zbkc' (Carry-less multiply instructions for Cryptography)">;
 
+def FeatureStdExtZbpbo
+    : SubtargetFeature<"experimental-zbpbo", "HasStdExtZbpbo", "true",
+                       "'Zbpbo' ('B' & 'P' Overlay Instructions)">;
+def HasStdExtZbpbo
+    : Predicate<"Subtarget->hasStdExtZbpbo()">,
+                             AssemblerPredicate<(all_of FeatureStdExtZbpbo),
+                             "'Zbpbo' ('B' & 'P' Overlay Instructions)">;
+
+def HasStdExtZbbOrZbpbo
+    : Predicate<"Subtarget->hasStdExtZbb() || Subtarget->hasStdExtZbpbo()">,
+                AssemblerPredicate<(any_of FeatureStdExtZbb, FeatureStdExtZbpbo),
+                                   "'Zbb' (Basic Bit-Manipulation) or "
+                                   "'Zbpbo' ('B' & 'P' Overlay Instructions)">;
+
+def HasStdExtZbpOrZbpbo
+    : Predicate<"Subtarget->hasStdExtZbp() || Subtarget->hasStdExtZbpbo()">,
+                AssemblerPredicate<(any_of FeatureStdExtZbp, FeatureStdExtZbpbo),
+                                   "'Zbp' (Permutation 'Zb' Instructions) or "
+                                   "'Zbpbo' ('B' & 'P' Overlay Instructions)">;
+
+def HasStdExtZbpOrZbkbOrZbpbo
+    : Predicate<"Subtarget->hasStdExtZbp() || Subtarget->hasStdExtZbkb()"
+                 "|| Subtarget->hasStdExtZbpbo()">,
+                AssemblerPredicate<(any_of FeatureStdExtZbp, FeatureStdExtZbkb,
+                                           FeatureStdExtZbpbo),
+                                   "'Zbp' (Permutation 'Zb' Instructions) or "
+                                   "'Zbkb' (Bitmanip instructions for Cryptography) or "
+                                   "'Zbpbo' ('B' & 'P' Overlay Instructions)">;
+
+def HasStdExtZbtOrZbpbo
+    : Predicate<"Subtarget->hasStdExtZbt() || Subtarget->hasStdExtZbpbo()">,
+                AssemblerPredicate<(any_of FeatureStdExtZbt, FeatureStdExtZbpbo),
+                                   "'Zbt' (Ternary 'Zb' Instructions) or "
+                                   "'Zbpbo' ('B' & 'P' Overlay Instructions)">;
+
 def FeatureStdExtZknd
     : SubtargetFeature<"zknd", "HasStdExtZknd", "true",
                        "'Zknd' (NIST Suite: AES Decryption)">;

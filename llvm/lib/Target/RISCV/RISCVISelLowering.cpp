@@ -294,6 +294,11 @@ RISCVTargetLowering::RISCVTargetLowering(const TargetMachine &TM,
     if (Subtarget.is64Bit())
       setOperationAction(ISD::ABS, MVT::i32, Custom);
   }
+  if (Subtarget.hasStdExtZbpbo()) {
+    setOperationAction({ISD::SMIN, ISD::SMAX}, XLenVT, Legal);
+    setOperationAction(ISD::CTLZ, MVT::i32, Legal);
+    setOperationAction({ISD::BITREVERSE, ISD::BSWAP}, MVT::i16, Custom);
+  }
 
   if (Subtarget.hasStdExtZbt()) {
     setOperationAction({ISD::FSHL, ISD::FSHR}, XLenVT, Custom);
@@ -7136,7 +7141,8 @@ void RISCVTargetLowering::ReplaceNodeResults(SDNode *N,
     MVT XLenVT = Subtarget.getXLenVT();
     assert((VT == MVT::i8 || VT == MVT::i16 ||
             (VT == MVT::i32 && Subtarget.is64Bit())) &&
-           Subtarget.hasStdExtZbp() && "Unexpected custom legalisation");
+           (Subtarget.hasStdExtZbp() || Subtarget.hasStdExtZbpbo()) &&
+           "Unexpected custom legalisation");
     SDValue NewOp0 = DAG.getNode(ISD::ANY_EXTEND, DL, XLenVT, N->getOperand(0));
     unsigned Imm = VT.getSizeInBits() - 1;
     // If this is BSWAP rather than BITREVERSE, clear the lower 3 bits.
@@ -7841,7 +7847,8 @@ static SDValue combineROTR_ROTL_RORW_ROLW(SDNode *N, SelectionDAG &DAG,
   EVT VT = N->getValueType(0);
   SDLoc DL(N);
 
-  if (!Subtarget.hasStdExtZbp() || Src.getOpcode() != RISCVISD::GREV)
+  if (!(Subtarget.hasStdExtZbp() || Subtarget.hasStdExtZbpbo()) ||
+      Src.getOpcode() != RISCVISD::GREV)
     return SDValue();
 
   if (!isa<ConstantSDNode>(N->getOperand(1)) ||

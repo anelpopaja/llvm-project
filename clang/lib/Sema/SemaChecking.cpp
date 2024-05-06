@@ -4316,7 +4316,7 @@ bool Sema::CheckRISCVLMUL(CallExpr *TheCall, unsigned ArgNum) {
          << Arg->getSourceRange();
 }
 
-static bool isRISCV32Builtin(unsigned BuiltinID) {
+static bool isRISCV32Builtin(unsigned BuiltinID, const TargetInfo &TI) {
   // These builtins only work on riscv32 targets.
   switch (BuiltinID) {
   case RISCV::BI__builtin_riscv_zip_32:
@@ -4332,6 +4332,9 @@ static bool isRISCV32Builtin(unsigned BuiltinID) {
   case RISCV::BI__builtin_riscv_sha512sum0r_32:
   case RISCV::BI__builtin_riscv_sha512sum1r_32:
     return true;
+  case RISCV::BI__builtin_riscv_clz_32:
+    if (!TI.hasFeature("zbb"))
+      return true;
   }
 
   return false;
@@ -4349,7 +4352,7 @@ bool Sema::CheckRISCVBuiltinFunctionCall(const TargetInfo &TI,
 
   // Check for 32-bit only builtins on a 64-bit target.
   const llvm::Triple &TT = TI.getTriple();
-  if (TT.getArch() != llvm::Triple::riscv32 && isRISCV32Builtin(BuiltinID))
+  if (TT.getArch() != llvm::Triple::riscv32 && isRISCV32Builtin(BuiltinID, TI))
     return Diag(TheCall->getCallee()->getBeginLoc(),
                 diag::err_32_bit_builtin_64_bit_tgt);
 
