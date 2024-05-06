@@ -150,6 +150,7 @@ public:
   bool hasStdExtZfhminOrZhinxmin() const {
     return HasStdExtZfhmin || HasStdExtZhinxmin;
   }
+
   bool hasHalfFPLoadStoreMove() const {
     return HasStdExtZfhmin || HasStdExtZfbfmin;
   }

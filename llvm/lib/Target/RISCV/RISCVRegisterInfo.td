@@ -67,6 +67,8 @@ def sub_vrm1_7 : ComposedSubRegIndex<sub_vrm2_3, sub_vrm1_1>;
 // FIXME: Support HwMode in SubRegIndex?
 def sub_gpr_even : SubRegIndex<-1>;
 def sub_gpr_odd  : SubRegIndex<-1, -1>;
+
+
 } // Namespace = "RISCV"
 
 // Integer registers
@@ -183,6 +185,10 @@ def SR07 : GPRRegisterClass<(add (sequence "X%u", 8, 9),
                                  (sequence "X%u", 18, 23))>;
 
 def GPRX1X5 :  GPRRegisterClass<(add X1, X5)>;
+
+// Dummy zero register for pairing with X0.
+def REG_PAIR_WITH_X0 : RISCVReg<0, "0">;
+
 
 // Floating point registers
 let RegAltNameIndices = [ABIRegAltName] in {

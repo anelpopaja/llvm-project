@@ -599,6 +599,40 @@ def HasStdExtZfhOrZvfh
                          "'Zfh' (Half-Precision Floating-Point) or "
                          "'Zvfh' (Vector Half-Precision Floating-Point)">;
 
+// P extension
+
+def FeatureStdExtZpn
+    : SubtargetFeature<"experimental-zpn", "HasStdExtZpn", "true",
+                       "'Zpn' (Normal 'P' Instructions)">;
+def HasStdExtZpn : Predicate<"Subtarget->hasStdExtZpn()">,
+                             AssemblerPredicate<(all_of FeatureStdExtZpn),
+                             "'Zpn' (Normal 'P' Instructions)">;
+
+def FeatureStdExtZpsfoperand
+    : SubtargetFeature<"experimental-zpsfoperand", "HasStdExtZpsfoperand", "true",
+                       "'Zpsfoperand' (64-bit operand 'P' Instructions)">;
+def HasStdExtZpsfoperand : Predicate<"Subtarget->hasStdExtZpsfoperand()">,
+                           AssemblerPredicate<(all_of FeatureStdExtZpsfoperand),
+                           "'Zpsfoperand' (64-bit operand 'P' Instructions)">;
+
+// Some instructions belong to zpsfoperand and have aliased instruction belong to zpn.
+// They should be enabled if either has been specified.
+def HasStdExtZpnOrZpsfoperand
+    : Predicate<"Subtarget->hasStdExtZpn() || Subtarget->hasStdExtZpsoperand()">,
+                AssemblerPredicate<(any_of FeatureStdExtZpn, FeatureStdExtZpsfoperand),
+                                   "'Zpn' (Normal 'P' Instructions) or "
+                                   "'Zpsfoperand' (64-bit operand 'P' Instructions)">;
+
+def FeatureStdExtP
+    : SubtargetFeature<"experimental-p", "HasStdExtP", "true",
+                       "'P' (Packed-SIMD Instructions)",
+                       [FeatureStdExtZpn,
+                        FeatureStdExtZpsfoperand]>;
+
+def HasStdExtP : Predicate<"Subtarget->hasStdExtP()">,
+                           AssemblerPredicate<(all_of FeatureStdExtP),
+                           "'P' (Packed-SIMD Instructions)">;
+
 // Vector Cryptography and Bitmanip Extensions
 
 def FeatureStdExtZvkb

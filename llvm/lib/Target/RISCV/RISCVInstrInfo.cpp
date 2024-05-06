@@ -2057,6 +2057,12 @@ bool RISCVInstrInfo::verifyInstruction(const MachineInstr &MI,
         case RISCVOp::OPERAND_RVKRNUM_2_14:
           Ok = Imm >= 2 && Imm <= 14;
           break;
+        case RISCVOp::OPERAND_UIMMLOG2XLENBYTES:
+          if (STI.getTargetTriple().isArch64Bit())
+            Ok = isUInt<3>(Imm);
+          else
+            Ok = isUInt<2>(Imm);
+          break;
         }
         if (!Ok) {
           ErrInfo = "Invalid immediate";

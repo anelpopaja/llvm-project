@@ -223,8 +223,8 @@ def uimm2 : RISCVUImmLeafOp<2> {
     return isUInt<2>(Imm);
   }];
 }
-def uimm3 : RISCVUImmOp<3>;
-def uimm4 : RISCVUImmOp<4>;
+def uimm3 : RISCVUImmLeafOp<3>;
+def uimm4 : RISCVUImmLeafOp<4>;
 def uimm5 : RISCVUImmLeafOp<5>;
 def uimm6 : RISCVUImmLeafOp<6>;
 def uimm7_opcode : RISCVUImmOp<7> {
@@ -2172,6 +2172,7 @@ include "RISCVInstrInfoZb.td"
 include "RISCVInstrInfoZk.td"
 
 // Vector
+include "RISCVInstrInfoP.td"
 include "RISCVInstrInfoV.td"
 include "RISCVInstrInfoZvk.td"
 
