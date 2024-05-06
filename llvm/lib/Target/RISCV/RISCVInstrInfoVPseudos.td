@@ -76,7 +76,7 @@
 //===----------------------------------------------------------------------===//
 
 def riscv_vmv_x_s : SDNode<"RISCVISD::VMV_X_S",
-                           SDTypeProfile<1, 1, [SDTCisInt<0>, SDTCisVec<1>,
+                           SDTypeProfile<1, 1, [SDTCisVT<0, XLenVT>, SDTCisVec<1>,
                                                 SDTCisInt<1>]>>;
 def riscv_read_vlenb : SDNode<"RISCVISD::READ_VLENB",
                               SDTypeProfile<1, 0, [SDTCisVT<0, XLenVT>]>>;

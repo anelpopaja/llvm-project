@@ -38,6 +38,24 @@ def riscv_absw   : SDNode<"RISCVISD::ABSW",   SDTIntUnaryOp>;
 def riscv_clmul  : SDNode<"RISCVISD::CLMUL",  SDTIntBinOp>;
 def riscv_clmulh : SDNode<"RISCVISD::CLMULH", SDTIntBinOp>;
 def riscv_clmulr : SDNode<"RISCVISD::CLMULR", SDTIntBinOp>;
+def riscv_fslw   : SDNode<"RISCVISD::FSLW",   SDT_RISCVIntShiftDOpW>;
+def riscv_fsrw   : SDNode<"RISCVISD::FSRW",   SDT_RISCVIntShiftDOpW>;
+def riscv_fsl    : SDNode<"RISCVISD::FSL",    SDTIntShiftDOp>;
+def riscv_fsr    : SDNode<"RISCVISD::FSR",    SDTIntShiftDOp>;
+def riscv_grev   : SDNode<"RISCVISD::GREV",   SDT_RISCVIntBinOp>;
+def riscv_grevw  : SDNode<"RISCVISD::GREVW",  SDT_RISCVIntBinOpW>;
+def riscv_gorc   : SDNode<"RISCVISD::GORC",   SDT_RISCVIntBinOp>;
+def riscv_gorcw  : SDNode<"RISCVISD::GORCW",  SDT_RISCVIntBinOpW>;
+def riscv_shfl   : SDNode<"RISCVISD::SHFL",   SDTIntBinOp>;
+def riscv_shflw  : SDNode<"RISCVISD::SHFLW",  SDT_RISCVIntBinOpW>;
+def riscv_unshfl : SDNode<"RISCVISD::UNSHFL", SDTIntBinOp>;
+def riscv_unshflw: SDNode<"RISCVISD::UNSHFLW",SDT_RISCVIntBinOpW>;
+def riscv_bfp    : SDNode<"RISCVISD::BFP",    SDTIntBinOp>;
+def riscv_bfpw   : SDNode<"RISCVISD::BFPW",   SDT_RISCVIntBinOpW>;
+def riscv_bcompress    : SDNode<"RISCVISD::BCOMPRESS",   SDTIntBinOp>;
+def riscv_bcompressw   : SDNode<"RISCVISD::BCOMPRESSW",  SDT_RISCVIntBinOpW>;
+def riscv_bdecompress  : SDNode<"RISCVISD::BDECOMPRESS", SDTIntBinOp>;
+def riscv_bdecompressw : SDNode<"RISCVISD::BDECOMPRESSW",SDT_RISCVIntBinOpW>;
 
 def UImmLog2XLenHalfAsmOperand : AsmOperandClass {
   let Name = "UImmLog2XLenHalf";

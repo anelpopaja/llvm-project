@@ -475,6 +475,7 @@ defvar FRM_DYN = 0b111;
 
 /// Floating point constants
 def fpimm0    : PatLeaf<(fpimm), [{ return N->isExactlyValue(+0.0); }]>;
+def fpimmneg0 : PatLeaf<(fpimm), [{ return N->isExactlyValue(-0.0); }]>;
 
 /// Generic pattern classes
 class PatSetCC<DAGOperand Ty, SDPatternOperator OpNode, CondCode Cond,
@@ -508,6 +509,7 @@ multiclass PatFprFprDynFrm_m<SDPatternOperator OpNode, RVInstRFrm Inst,
                                    Ext.PrimaryTy, Ext.PrimaryVT>;
 }
 
+
 /// Float conversion operations
 
 // [u]int32<->float conversion patterns must be gated on IsRV32 or IsRV64, so
@@ -522,6 +524,11 @@ foreach Ext = FExts in {
 }
 
 let Predicates = [HasStdExtF] in {
+/// Float constants
+def : Pat<(f32 (fpimm0)), (FMV_W_X (XLenVT X0))>;
+def : Pat<(f32 (fpimmneg0)), (FSGNJN_S (FMV_W_X (XLenVT X0)), (FMV_W_X (XLenVT X0)))>;
+
+
 def : Pat<(any_fsqrt FPR32:$rs1), (FSQRT_S FPR32:$rs1, FRM_DYN)>;
 
 def : Pat<(fneg FPR32:$rs1), (FSGNJN_S $rs1, $rs1)>;
@@ -543,6 +550,7 @@ foreach Ext = FExts in
 defm : PatFprFpr_m<fcopysign, FSGNJ_S, Ext>;
 
 let Predicates = [HasStdExtF] in {
+def : PatFprFpr<fcopysign, FSGNJ_S, FPR32, f32>;
 def : Pat<(fcopysign FPR32:$rs1, (fneg FPR32:$rs2)), (FSGNJN_S $rs1, $rs2)>;
 
 // fmadd: rs1 * rs2 + rs3
@@ -599,6 +607,8 @@ foreach Ext = FExts in {
   defm : PatFprFpr_m<riscv_fmin, FMIN_S, Ext>;
   defm : PatFprFpr_m<riscv_fmax, FMAX_S, Ext>;
 }
+def : PatFprFpr<fminnum, FMIN_S, FPR32, f32>;
+def : PatFprFpr<fmaxnum, FMAX_S, FPR32, f32>;
 
 /// Setcc
 // FIXME: SETEQ/SETLT/SETLE imply nonans, can we pick better instructions for

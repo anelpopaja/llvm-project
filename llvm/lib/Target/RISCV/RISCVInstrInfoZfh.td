@@ -248,7 +248,12 @@ def PseudoQuietFLT_H_INX : PseudoQuietFCMP<FPR16INX>;
 // Pseudo-instructions and codegen patterns
 //===----------------------------------------------------------------------===//
 
+let Predicates = [HasStdExtZfh] in {
 
+/// Float constants
+def : Pat<(f16 (fpimm0)), (FMV_H_X (XLenVT X0))>;
+def : Pat<(f16 (fpimmneg0)), (FSGNJN_H (FMV_H_X (XLenVT X0)), (FMV_H_X (XLenVT X0)))>;
+}
 /// Float conversion operations
 
 // [u]int32<->float conversion patterns must be gated on IsRV32 or IsRV64, so
@@ -348,6 +353,8 @@ foreach Ext = ZfhExts in {
   defm : PatFprFpr_m<riscv_fmin, FMIN_H, Ext>;
   defm : PatFprFpr_m<riscv_fmax, FMAX_H, Ext>;
 }
+def : PatFprFpr<fminnum, FMIN_H, FPR16, f16>;
+def : PatFprFpr<fmaxnum, FMAX_H, FPR16, f16>;
 
 /// Setcc
 // FIXME: SETEQ/SETLT/SETLE imply nonans, can we pick better instructions for
@@ -365,6 +372,7 @@ foreach Ext = ZfhExts in {
 
 let Predicates = [HasStdExtZfh] in {
 // Match signaling FEQ_H
+
 def : Pat<(XLenVT (strict_fsetccs (f16 FPR16:$rs1), FPR16:$rs2, SETEQ)),
           (AND (FLE_H $rs1, $rs2),
                (FLE_H $rs2, $rs1))>;
@@ -376,6 +384,8 @@ def : Pat<(XLenVT (strict_fsetccs (f16 FPR16:$rs1), (f16 FPR16:$rs1), SETEQ)),
           (FLE_H $rs1, $rs1)>;
 def : Pat<(XLenVT (strict_fsetccs (f16 FPR16:$rs1), (f16 FPR16:$rs1), SETOEQ)),
           (FLE_H $rs1, $rs1)>;
+
+def Select_FPR16_Using_CC_GPR : SelectCC_rrirr<FPR16, f16, GPR, XLenVT>;
 } // Predicates = [HasStdExtZfh]
 
 let Predicates = [HasStdExtZhinx] in {
@@ -401,7 +411,7 @@ foreach Ext = ZfhExts in {
 }
 
 let Predicates = [HasStdExtZfh] in {
-defm Select_FPR16 : SelectCC_GPR_rrirr<FPR16, f16>;
+
 
 def PseudoFROUND_H : PseudoFROUND<FPR16, f16>;
 } // Predicates = [HasStdExtZfh]

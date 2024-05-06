@@ -2868,7 +2868,7 @@ foreach vti = NoGroupFloatVectors in {
 }
 
 foreach vti = AllFloatVectors in {
-  let Predicates = GetVTypePredicates<vti>.Predicates in {
+    let Predicates = GetVTypePredicates<vti>.Predicates in {
     def : Pat<(vti.Vector (riscv_vfmv_s_f_vl (vti.Vector vti.RegClass:$merge),
                                              vti.ScalarRegClass:$rs1,
                                              VLOpFrag)),
@@ -2876,6 +2876,7 @@ foreach vti = AllFloatVectors in {
                   vti.RegClass:$merge,
                   (vti.Scalar vti.ScalarRegClass:$rs1), GPR:$vl, vti.Log2SEW)>;
   }
+
   defvar ivti = GetIntVTypeInfo<vti>.Vti;
   let Predicates = !listconcat(GetVTypePredicates<vti>.Predicates,
                                GetVTypePredicates<ivti>.Predicates) in {

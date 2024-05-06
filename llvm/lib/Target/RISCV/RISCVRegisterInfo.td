@@ -123,6 +123,16 @@ def XLenFVT : ValueTypeByHwMode<[RV64],
                                 [f64]>;
 def XLenPairFVT : ValueTypeByHwMode<[RV32],
                                     [f64]>;
+
+def XVEI8VT : ValueTypeByHwMode<[RV32, RV64],
+                                [v4i8, v8i8]>;
+
+def XVEI16VT : ValueTypeByHwMode<[RV32,  RV64],
+                                 [v2i16, v4i16]>;
+
+def XVEI32VT : ValueTypeByHwMode<[RV32,  RV64],
+                                 [i32, v2i32]>;
+
 def XLenRI : RegInfoByHwMode<
       [RV32,              RV64],
       [RegInfo<32,32,32>, RegInfo<64,64,64>]>;

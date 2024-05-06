@@ -43,6 +43,12 @@ multiclass AMO_rr_aq_rl<bits<5> funct5, bits<3> funct3, string opcodestr> {
   def _AQ_RL : AMO_rr<funct5, 1, 1, funct3, opcodestr # ".aqrl">;
 }
 
+multiclass AtomicStPat<PatFrag StoreOp, RVInst Inst, RegisterClass StTy,
+                       ValueType vt = XLenVT> {
+  def : Pat<(StoreOp (AddrRegImm (XLenVT GPR:$rs1), simm12:$imm12), (vt StTy:$rs2)),
+            (Inst StTy:$rs2, GPR:$rs1, simm12:$imm12)>;
+}
+
 //===----------------------------------------------------------------------===//
 // Instructions
 //===----------------------------------------------------------------------===//
@@ -167,6 +173,16 @@ defm : AMOPat<"atomic_load_min_64", "AMOMIN_D", i64, [IsRV64]>;
 defm : AMOPat<"atomic_load_umax_64", "AMOMAXU_D", i64, [IsRV64]>;
 defm : AMOPat<"atomic_load_umin_64", "AMOMINU_D", i64, [IsRV64]>;
 
+def : Pat<(XLenVT (atomic_load_sub_32_monotonic GPR:$addr, GPR:$incr)),
+          (AMOADD_W GPR:$addr, (SUB (XLenVT X0), GPR:$incr))>;
+def : Pat<(XLenVT (atomic_load_sub_32_acquire GPR:$addr, GPR:$incr)),
+          (AMOADD_W_AQ GPR:$addr, (SUB (XLenVT X0), GPR:$incr))>;
+def : Pat<(XLenVT (atomic_load_sub_32_release GPR:$addr, GPR:$incr)),
+          (AMOADD_W_RL GPR:$addr, (SUB (XLenVT X0), GPR:$incr))>;
+def : Pat<(XLenVT (atomic_load_sub_32_acq_rel GPR:$addr, GPR:$incr)),
+          (AMOADD_W_AQ_RL GPR:$addr, (SUB (XLenVT X0), GPR:$incr))>;
+def : Pat<(XLenVT (atomic_load_sub_32_seq_cst GPR:$addr, GPR:$incr)),
+          (AMOADD_W_AQ_RL GPR:$addr, (SUB (XLenVT X0), GPR:$incr))>;
 
 /// Pseudo AMOs
 
@@ -267,9 +283,17 @@ let Size = 36 in
 def PseudoMaskedAtomicLoadUMin32 : PseudoMaskedAMOUMinUMax;
 def : PseudoMaskedAMOPat<int_riscv_masked_atomicrmw_umin_i32,
                          PseudoMaskedAtomicLoadUMin32>;
+
 } // Predicates = [HasStdExtA]
 
 let Predicates = [HasStdExtA, IsRV64] in {
+
+/// 64-bit atomic loads and stores
+
+// Fences will be inserted for atomic load/stores according to the logic in
+// RISCVTargetLowering::{emitLeadingFence,emitTrailingFence}.
+
+/// 64-bit pseudo AMOs
 
 let Size = 20 in
 def PseudoAtomicLoadNand64 : PseudoAMO;

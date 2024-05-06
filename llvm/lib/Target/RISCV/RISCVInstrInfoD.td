@@ -393,6 +393,7 @@ foreach Ext = DExts in {
   defm : PatFprFpr_m<riscv_fmax, FMAX_D, Ext>;
 }
 
+
 /// Setcc
 // FIXME: SETEQ/SETLT/SETLE imply nonans, can we pick better instructions for
 // strict versions of those.

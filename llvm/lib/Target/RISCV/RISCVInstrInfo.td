@@ -38,6 +38,9 @@ def SDT_RISCVReadCycleWide : SDTypeProfile<2, 0, [SDTCisVT<0, i32>,
 def SDT_RISCVIntUnaryOpW : SDTypeProfile<1, 1, [
   SDTCisSameAs<0, 1>, SDTCisVT<0, i64>
 ]>;
+def SDT_RISCVIntBinOp : SDTypeProfile<1, 2, [
+  SDTCisSameAs<0, 1>, SDTCisSameAs<0, 2>, SDTCisVT<0, XLenVT>
+]>;
 def SDT_RISCVIntBinOpW : SDTypeProfile<1, 2, [
   SDTCisSameAs<0, 1>, SDTCisSameAs<0, 2>, SDTCisVT<0, i64>
 ]>;
@@ -1278,7 +1281,7 @@ class shiftop<SDPatternOperator operator>
               (operator node:$val, (XLenVT (shiftMaskXLen node:$count)))>;
 class shiftopw<SDPatternOperator operator>
     : PatFrag<(ops node:$val, node:$count),
-              (operator node:$val, (i64 (shiftMask32 node:$count)))>;
+              (operator node:$val, (i64 (shiftMask32 (i64 node:$count))))>;
 
 def : PatGprGpr<shiftop<shl>, SLL>;
 def : PatGprGpr<shiftop<srl>, SRL>;
@@ -1569,6 +1572,18 @@ let Predicates = [HasStdExtC, OptForMinSize] in {
   def : SelectCompressOpt<SETEQ>;
   def : SelectCompressOpt<SETNE>;
 }
+
+let usesCustomInserter = 1 in
+class SelectCC_rrirr<RegisterClass valty, ValueType valvt,
+                     RegisterClass cmpty, ValueType cmpvt>
+    : Pseudo<(outs valty:$dst),
+             (ins cmpty:$lhs, cmpty:$rhs, ixlenimm:$imm,
+              valty:$truev, valty:$falsev),
+             [(set valty:$dst,
+               (riscv_selectcc_frag:$imm (cmpvt cmpty:$lhs), cmpty:$rhs, cond,
+                                         (valvt valty:$truev), valty:$falsev))]>;
+
+
 
 /// Branches and jumps
 
@@ -2049,7 +2064,7 @@ def : Pat<(XLenVT (add GPR:$rs1, (AddiPair:$rs2))),
 
 let Predicates = [IsRV64] in {
 // Select W instructions if only the lower 32-bits of the result are used.
-def : Pat<(binop_allwusers<add> GPR:$rs1, (AddiPair:$rs2)),
+def : Pat<(binop_allwusers<add> (XLenVT GPR:$rs1), (AddiPair:$rs2)),
           (ADDIW (ADDIW GPR:$rs1, (AddiPairImmLarge AddiPair:$rs2)),
                  (AddiPairImmSmall AddiPair:$rs2))>;
 }
