@@ -108,6 +108,11 @@ static const RISCVSupportedExtension SupportedExperimentalExtensions[] = {
     {"zbr", RISCVExtensionVersion{0, 93}},
     {"zbt", RISCVExtensionVersion{0, 93}},
     {"zvfh", RISCVExtensionVersion{0, 1}},
+
+    {"p", RISCVExtensionVersion{0, 911}},
+    {"zbpbo", RISCVExtensionVersion{0, 911}},
+    {"zpn", RISCVExtensionVersion{0, 911}},
+    {"zpsfoperand", RISCVExtensionVersion{0, 911}},
 };
 
 static bool stripExperimentalPrefix(StringRef &Ext) {
@@ -597,8 +602,8 @@ RISCVISAInfo::parseArchString(StringRef Arch, bool EnableExperimentalExtension,
 
     // The order is OK, then push it into features.
     // TODO: Use version number when setting target features
-    // Currently LLVM supports only "mafdcbv".
-    StringRef SupportedStandardExtension = "mafdcbv";
+    // Currently LLVM supports only "mafdcbpv".
+    StringRef SupportedStandardExtension = "mafdcbpv";
     if (!SupportedStandardExtension.contains(C))
       return createStringError(errc::invalid_argument,
                                "unsupported standard user-level extension '%c'",
@@ -772,6 +777,7 @@ static const char *ImpliedExtsZk[] = {"zkn", "zkt", "zkr"};
 static const char *ImpliedExtsZkn[] = {"zbkb", "zbkc", "zbkx", "zkne", "zknd", "zknh"};
 static const char *ImpliedExtsZks[] = {"zbkb", "zbkc", "zbkx", "zksed", "zksh"};
 static const char *ImpliedExtsZvfh[] = {"zve32f"};
+static const char *ImpliedExtsP[] = {"zbpbo", "zpn", "zpsfoperand"};
 
 struct ImpliedExtsEntry {
   StringLiteral Name;
@@ -786,6 +792,7 @@ struct ImpliedExtsEntry {
 
 // Note: The table needs to be sorted by name.
 static constexpr ImpliedExtsEntry ImpliedExts[] = {
+    {{"p"}, {ImpliedExtsP}},
     {{"v"}, {ImpliedExtsV}},
     {{"zdinx"}, {ImpliedExtsZdinx}},
     {{"zfh"}, {ImpliedExtsZfh}},
