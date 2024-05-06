@@ -140,7 +140,7 @@ def XLenRI : RegInfoByHwMode<
       [RegInfo<32,32,32>, RegInfo<64,64,64>]>;
 
 class GPRRegisterClass<dag regList>
-    : RegisterClass<"RISCV", [XLenVT, XLenFVT, i32], 32, regList> {
+    : RegisterClass<"RISCV", [XLenVT, XVEI8VT, XVEI16VT, XVEI32VT, XLenFVT, i32], 32, regList> {
   let RegInfos = XLenRI;
 }
 

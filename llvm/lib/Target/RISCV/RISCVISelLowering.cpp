@@ -226,6 +226,17 @@ RISCVTargetLowering::RISCVTargetLowering(const TargetMachine &TM,
     }
   }
 
+  if (Subtarget.hasStdExtZpn()) {
+    if (Subtarget.is64Bit()) {
+      addRegisterClass(MVT::v8i8, &RISCV::GPRRegClass);
+      addRegisterClass(MVT::v4i16, &RISCV::GPRRegClass);
+      addRegisterClass(MVT::v2i32, &RISCV::GPRRegClass);
+    } else {
+      addRegisterClass(MVT::v4i8, &RISCV::GPRRegClass);
+      addRegisterClass(MVT::v2i16, &RISCV::GPRRegClass);
+    }
+  }
+
   // Compute derived properties from the register classes.
   computeRegisterProperties(STI.getRegisterInfo());
 
@@ -1363,6 +1374,40 @@ RISCVTargetLowering::RISCVTargetLowering(const TargetMachine &TM,
       if (Subtarget.is64Bit()) {
         setIndexedLoadAction(im, MVT::i64, Legal);
         setIndexedStoreAction(im, MVT::i64, Legal);
+      }
+    }
+  }
+if (Subtarget.hasStdExtZpn()) {
+    const auto addTypeForP = [&](MVT VT, MVT PromotedBitwiseVT) {
+      // Expand all builtin opcodes.
+      for (unsigned Opc = 0; Opc < ISD::BUILTIN_OP_END; ++Opc)
+        setOperationAction(Opc, VT, Expand);
+
+      setOperationAction(ISD::BITCAST, VT, Legal);
+
+      // Promote load and store operations.
+      setOperationAction(ISD::LOAD, VT, Promote);
+      AddPromotedToType(ISD::LOAD, VT, PromotedBitwiseVT);
+      setOperationAction(ISD::STORE, VT, Promote);
+      AddPromotedToType(ISD::STORE, VT, PromotedBitwiseVT);
+    };
+
+    if (Subtarget.is64Bit()) {
+      addTypeForP(MVT::v8i8, MVT::i64);
+      addTypeForP(MVT::v4i16, MVT::i64);
+      addTypeForP(MVT::v2i32, MVT::i64);
+    } else {
+      addTypeForP(MVT::v4i8, MVT::i32);
+      addTypeForP(MVT::v2i16, MVT::i32);
+    }
+
+    // Expand all truncating stores and extending loads.
+    for (MVT VT0 : MVT::vector_valuetypes()) {
+      for (MVT VT1 : MVT::vector_valuetypes()) {
+        setTruncStoreAction(VT0, VT1, Expand);
+        setLoadExtAction(ISD::SEXTLOAD, VT0, VT1, Expand);
+        setLoadExtAction(ISD::ZEXTLOAD, VT0, VT1, Expand);
+        setLoadExtAction(ISD::EXTLOAD, VT0, VT1, Expand);
       }
     }
   }
