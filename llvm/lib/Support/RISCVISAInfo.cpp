@@ -192,7 +192,12 @@ static const RISCVSupportedExtension SupportedExtensions[] = {
 
 // NOTE: This table should be sorted alphabetically by extension name.
 static const RISCVSupportedExtension SupportedExperimentalExtensions[] = {
+    
+    {"p", {0, 911}},
+    
     {"zacas", {1, 0}},
+
+    {"zbpbo", {0, 911}},
 
     {"zcmop", {0, 2}},
 
@@ -203,10 +208,15 @@ static const RISCVSupportedExtension SupportedExperimentalExtensions[] = {
 
     {"zimop", {0, 1}},
 
+
+    {"zpn", {0, 911}},
+    {"zpsfoperand", {0, 911}},
+
     {"ztso", {0, 1}},
 
     {"zvfbfmin", {1, 0}},
     {"zvfbfwma", {1, 0}},
+
 };
 
 static void verifyTables() {
@@ -1058,6 +1068,7 @@ static const char *ImpliedExtsZvl512b[] = {"zvl256b"};
 static const char *ImpliedExtsZvl64b[] = {"zvl32b"};
 static const char *ImpliedExtsZvl65536b[] = {"zvl32768b"};
 static const char *ImpliedExtsZvl8192b[] = {"zvl4096b"};
+static const char *ImpliedExtsP[] = {"zbpbo", "zpn", "zpsfoperand"};
 
 struct ImpliedExtsEntry {
   StringLiteral Name;
@@ -1074,6 +1085,7 @@ struct ImpliedExtsEntry {
 static constexpr ImpliedExtsEntry ImpliedExts[] = {
     {{"d"}, {ImpliedExtsD}},
     {{"f"}, {ImpliedExtsF}},
+    {{"p"}, {ImpliedExtsP}},
     {{"v"}, {ImpliedExtsV}},
     {{"xsfvcp"}, {ImpliedExtsXSfvcp}},
     {{"xsfvfnrclipxfqf"}, {ImpliedExtsXSfvfnrclipxfqf}},

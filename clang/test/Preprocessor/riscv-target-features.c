@@ -151,6 +151,10 @@
 // CHECK-NOT: __riscv_ztso {{.*$}}
 // CHECK-NOT: __riscv_zvfbfmin {{.*$}}
 // CHECK-NOT: __riscv_zvfbfwma {{.*$}}
+// CHECK-NOT: __riscv_p
+// CHECK-NOT: __riscv_zbpbo
+// CHECK-NOT: __riscv_zpn
+// CHECK-NOT: __riscv_zpsfoperand
 
 // RUN: %clang --target=riscv32-unknown-linux-gnu \
 // RUN: -march=rv32ia -x c -E -dM %s \
@@ -292,6 +296,44 @@
 // RUN: -march=rv64isvpbmt -x c -E -dM %s \
 // RUN: -o - | FileCheck --check-prefix=CHECK-SVPBMT-EXT %s
 // CHECK-SVPBMT-EXT: __riscv_svpbmt 1000000{{$}}
+
+// RUN: %clang -target riscv32-unknown-linux-gnu -menable-experimental-extensions \
+// RUN: -march=rv32ip0p911 -x c -E -dM %s \
+// RUN: -o - | FileCheck --check-prefix=CHECK-P-EXT %s
+// RUN: %clang -target riscv64-unknown-linux-gnu -menable-experimental-extensions \
+// RUN: -march=rv64ip0p911 -x c -E -dM %s \
+// RUN: -o - | FileCheck --check-prefix=CHECK-P-EXT %s
+// CHECK-P-EXT: __riscv_p 911000{{$}}
+// CHECK-P-EXT: __riscv_zbpbo 911000{{$}}
+// CHECK-P-EXT: __riscv_zpn 911000{{$}}
+// CHECK-P-EXT: __riscv_zpsfoperand 911000{{$}}
+
+// RUN: %clang -target riscv32-unknown-linux-gnu -menable-experimental-extensions \
+// RUN: -march=rv32izbpbo0p911 -x c -E -dM %s \
+// RUN: -o - | FileCheck --check-prefix=CHECK-ZBPBO-EXT %s
+// RUN: %clang -target riscv64-unknown-linux-gnu -menable-experimental-extensions \
+// RUN: -march=rv64izbpbo0p911 -x c -E -dM %s \
+// RUN: -o - | FileCheck --check-prefix=CHECK-ZBPBO-EXT %s
+// CHECK-ZBPBO-NOT: __riscv_p
+// CHECK-ZBPBO-EXT: __riscv_zbpbo 911000{{$}}
+
+// RUN: %clang -target riscv32-unknown-linux-gnu -menable-experimental-extensions \
+// RUN: -march=rv32izpn0p911 -x c -E -dM %s \
+// RUN: -o - | FileCheck --check-prefix=CHECK-ZPN-EXT %s
+// RUN: %clang -target riscv64-unknown-linux-gnu -menable-experimental-extensions \
+// RUN: -march=rv64izpn0p911 -x c -E -dM %s \
+// RUN: -o - | FileCheck --check-prefix=CHECK-ZPN-EXT %s
+// CHECK-ZPN-NOT: __riscv_p
+// CHECK-ZPN-EXT: __riscv_zpn 911000{{$}}
+
+// RUN: %clang -target riscv32-unknown-linux-gnu -menable-experimental-extensions \
+// RUN: -march=rv32izpsfoperand0p911 -x c -E -dM %s \
+// RUN: -o - | FileCheck --check-prefix=CHECK-ZPSFOPERAND-EXT %s
+// RUN: %clang -target riscv64-unknown-linux-gnu -menable-experimental-extensions \
+// RUN: -march=rv64izpsfoperand0p911 -x c -E -dM %s \
+// RUN: -o - | FileCheck --check-prefix=CHECK-ZPSFOPERAND-EXT %s
+// CHECK-ZPSFOPERAND-NOT: __riscv_p
+// CHECK-ZPSFOPERAND-EXT: __riscv_zpsfoperand 911000{{$}}
 
 // RUN: %clang --target=riscv32-unknown-linux-gnu \
 // RUN: -march=rv32iv1p0 -x c -E -dM %s \
