@@ -88,6 +88,10 @@ private:
   bool HasStdExtZk = false;
   bool HasStdExtZicbom = false;
   bool HasStdExtZicboz = false;
+  bool HasStdExtZicbop = false;
+  bool HasStdExtP = false;
+  bool HasStdExtZpsfoperand = false;
+  bool HasStdExtZpn = false;
   bool HasRV64 = false;
   bool IsRV32E = false;
   bool EnableLinkerRelax = false;
@@ -183,6 +187,9 @@ public:
   bool hasStdExtZicbom() const { return HasStdExtZicbom; }
   bool hasStdExtZicboz() const { return HasStdExtZicboz; }
   bool is64Bit() const { return HasRV64; }
+  bool hasStdExtP() const { return HasStdExtP; }
+  bool hasStdExtZpsfoperand() const { return HasStdExtZpsfoperand; }
+  bool hasStdExtZpn() const { return HasStdExtZpn; }
   bool isRV32E() const { return IsRV32E; }
   bool enableLinkerRelax() const { return EnableLinkerRelax; }
   bool enableRVCHintInstrs() const { return EnableRVCHintInstrs; }

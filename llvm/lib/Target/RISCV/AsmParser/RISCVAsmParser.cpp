@@ -172,6 +172,7 @@ class RISCVAsmParser : public MCTargetAsmParser {
   OperandMatchResultTy parseMaskReg(OperandVector &Operands);
   OperandMatchResultTy parseInsnDirectiveOpcode(OperandVector &Operands);
   OperandMatchResultTy parseGPRAsFPR(OperandVector &Operands);
+  OperandMatchResultTy parseGPR32PairReg(OperandVector &Operands);
 
   bool parseOperand(OperandVector &Operands, StringRef Mnemonic);
 
@@ -360,6 +361,12 @@ public:
     return isGPR() && IsGPRAsFPR && !IsRV64 && !((Reg.RegNum - RISCV::X0) & 1);
   }
 
+  bool isGPR32Pair() const {
+    return Kind == KindTy::Register &&
+           RISCVMCRegisterClasses[RISCV::GPR32PairRegClassID].contains(
+               Reg.RegNum);
+  }
+
   static bool evaluateConstantImm(const MCExpr *Expr, int64_t &Imm,
                                   RISCVMCExpr::VariantKind &VK) {
     if (auto *RE = dyn_cast<RISCVMCExpr>(Expr)) {
@@ -520,6 +527,17 @@ public:
            (isRV64() || (isInt<32>(Imm) || isUInt<32>(Imm)));
   }
 
+  bool isUImmLog2XLenBytes() const {
+    int64_t Imm;
+    RISCVMCExpr::VariantKind VK = RISCVMCExpr::VK_RISCV_None;
+    if (!isImm())
+      return false;
+    if (!evaluateConstantImm(getImm(), Imm, VK) ||
+        VK != RISCVMCExpr::VK_RISCV_None)
+      return false;
+    return (isRV64() && isUInt<3>(Imm)) || isUInt<2>(Imm);
+  }
+
   bool isUImmLog2XLen() const {
     int64_t Imm;
     RISCVMCExpr::VariantKind VK = RISCVMCExpr::VK_RISCV_None;
@@ -566,6 +584,7 @@ public:
 
   bool isUImm2() { return IsUImm<2>(); }
   bool isUImm3() { return IsUImm<3>(); }
+  bool isUImm4() { return IsUImm<4>(); }
   bool isUImm5() { return IsUImm<5>(); }
   bool isUImm7() { return IsUImm<7>(); }
 
@@ -1139,10 +1158,16 @@ bool RISCVAsmParser::MatchAndEmitInstruction(SMLoc IDLoc, unsigned &Opcode,
     if (isRV64())
       return generateImmOutOfRangeError(Operands, ErrorInfo, 0, (1 << 5) - 1);
     return generateImmOutOfRangeError(Operands, ErrorInfo, 0, (1 << 4) - 1);
+  case Match_InvalidUImmLog2XLenBytes:
+    if (isRV64())
+      return generateImmOutOfRangeError(Operands, ErrorInfo, 0, (1 << 3) - 1);
+    return generateImmOutOfRangeError(Operands, ErrorInfo, 0, (1 << 2) - 1);
   case Match_InvalidUImm2:
     return generateImmOutOfRangeError(Operands, ErrorInfo, 0, (1 << 2) - 1);
   case Match_InvalidUImm3:
     return generateImmOutOfRangeError(Operands, ErrorInfo, 0, (1 << 3) - 1);
+  case Match_InvalidUImm4:
+    return generateImmOutOfRangeError(Operands, ErrorInfo, 0, (1 << 4) - 1);
   case Match_InvalidUImm5:
     return generateImmOutOfRangeError(Operands, ErrorInfo, 0, (1 << 5) - 1);
   case Match_InvalidUImm7:
@@ -1904,6 +1929,43 @@ RISCVAsmParser::parseZeroOffsetMemOp(OperandVector &Operands) {
     Error(OptionalImmOp->getStartLoc(), "optional integer offset must be 0",
           SMRange(OptionalImmOp->getStartLoc(), OptionalImmOp->getEndLoc()));
     return MatchOperand_ParseFail;
+  }
+
+  return MatchOperand_Success;
+}
+
+OperandMatchResultTy
+RISCVAsmParser::parseGPR32PairReg(OperandVector &Operands) {
+
+  switch (getLexer().getKind()) {
+  default:
+    return MatchOperand_NoMatch;
+  case AsmToken::Identifier:
+    StringRef Name = getLexer().getTok().getIdentifier();
+    MCRegister RegNo;
+    matchRegisterNameHelper(isRV32E(), RegNo, Name);
+
+    if (RegNo == RISCV::NoRegister)
+      return MatchOperand_NoMatch;
+
+    const MCRegisterClass &GPRRegClass =
+        RISCVMCRegisterClasses[RISCV::GPRRegClassID];
+    if (!GPRRegClass.contains(RegNo)) {
+      Error(getLoc(), "expected general purpose register");
+      return MatchOperand_ParseFail;
+    }
+
+    if (!isRV64()) {
+      if ((RegNo - RISCV::X0) % 2 != 0) {
+        Error(getLoc(), "expected even register");
+        return MatchOperand_ParseFail;
+      }
+      RegNo = (RegNo - RISCV::X0) / 2 + RISCV::X0_REG_PAIR_WITH_X0;
+    }
+    SMLoc S = getLoc();
+    SMLoc E = SMLoc::getFromPointer(S.getPointer() - 1);
+    getLexer().Lex();
+    Operands.push_back(RISCVOperand::createReg(RegNo, S, E, isRV64()));
   }
 
   return MatchOperand_Success;
