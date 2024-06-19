@@ -17,6 +17,8 @@
 // Operand and SDNode transformation definitions.
 //===----------------------------------------------------------------------===//
 
+
+
 def uimm4 : Operand<XLenVT>, ImmLeaf<XLenVT, [{return isUInt<4>(Imm);}]> {
   let ParserMatchClass = UImmAsmOperand<4>;
   let DecoderMethod = "decodeUImmOperand<4>";
@@ -1189,3 +1191,10 @@ class RVPTernaryINSBIntPat<RVInst Inst, string IntID>
 
 let Predicates = [HasStdExtZpn] in
 def : RVPTernaryINSBIntPat<INSB, "insb">;
+
+
+
+//add 8 pattern match
+
+def : Pat<(add (v4i8 GPR:$rs1), (v4i8 GPR:$rs2)),
+          (ADD8 GPR:$rs1, GPR:$rs2)>;

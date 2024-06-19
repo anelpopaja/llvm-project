@@ -85,6 +85,10 @@ RISCVTargetLowering::RISCVTargetLowering(const TargetMachine &TM,
 
   // Set up the register classes.
   addRegisterClass(XLenVT, &RISCV::GPRRegClass);
+  
+  addRegisterClass(MVT::v4i8, &RISCV::GPRRegClass);
+
+  setOperationAction(ISD::ADD, MVT::v4i8, Legal);
 
   if (Subtarget.hasStdExtZfh())
     addRegisterClass(MVT::f16, &RISCV::FPR16RegClass);
