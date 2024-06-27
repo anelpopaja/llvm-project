@@ -38,8 +38,9 @@
 #include "llvm/Support/KnownBits.h"
 #include "llvm/Support/MathExtras.h"
 #include "llvm/Support/raw_ostream.h"
-
+#include <iostream>
 using namespace llvm;
+using namespace std;
 
 #define DEBUG_TYPE "riscv-lower"
 
@@ -85,10 +86,6 @@ RISCVTargetLowering::RISCVTargetLowering(const TargetMachine &TM,
 
   // Set up the register classes.
   addRegisterClass(XLenVT, &RISCV::GPRRegClass);
-  
-  addRegisterClass(MVT::v4i8, &RISCV::GPRRegClass);
-
-  setOperationAction(ISD::ADD, MVT::v4i8, Legal);
 
   if (Subtarget.hasStdExtZfh())
     addRegisterClass(MVT::f16, &RISCV::FPR16RegClass);
@@ -177,11 +174,15 @@ RISCVTargetLowering::RISCVTargetLowering(const TargetMachine &TM,
   }
 
   if (Subtarget.hasStdExtZpn()) {
+    cout<<"Inside if subtarget.hasStdExtZpn\n";
+
     if (Subtarget.is64Bit()) {
+      cout<<"Inside is64Bit";
       addRegisterClass(MVT::v8i8, &RISCV::GPRRegClass);
       addRegisterClass(MVT::v4i16, &RISCV::GPRRegClass);
       addRegisterClass(MVT::v2i32, &RISCV::GPRRegClass);
     } else {
+      cout<<"Inside else is64Bit\n";
       addRegisterClass(MVT::v4i8, &RISCV::GPRRegClass);
       addRegisterClass(MVT::v2i16, &RISCV::GPRRegClass);
     }
@@ -196,6 +197,9 @@ RISCVTargetLowering::RISCVTargetLowering(const TargetMachine &TM,
                    MVT::i1, Promote);
 
   // TODO: add all necessary setOperationAction calls.
+
+  
+
   setOperationAction(ISD::DYNAMIC_STACKALLOC, XLenVT, Expand);
 
   setOperationAction(ISD::BR_JT, MVT::Other, Expand);
@@ -220,6 +224,7 @@ RISCVTargetLowering::RISCVTargetLowering(const TargetMachine &TM,
 
     setOperationAction({ISD::ADD, ISD::SUB, ISD::SHL, ISD::SRA, ISD::SRL},
                        MVT::i32, Custom);
+    
 
     setOperationAction({ISD::UADDO, ISD::USUBO, ISD::UADDSAT, ISD::USUBSAT},
                        MVT::i32, Custom);
@@ -842,6 +847,10 @@ RISCVTargetLowering::RISCVTargetLowering(const TargetMachine &TM,
                             ISD::XOR, ISD::SDIV, ISD::SREM, ISD::UDIV,
                             ISD::UREM, ISD::SHL, ISD::SRA, ISD::SRL},
                            VT, Custom);
+        
+        // Added custom pattern matching for following binary arithmetic operations
+
+        
 
         setOperationAction(
             {ISD::SMIN, ISD::SMAX, ISD::UMIN, ISD::UMAX, ISD::ABS}, VT, Custom);
@@ -949,6 +958,8 @@ RISCVTargetLowering::RISCVTargetLowering(const TargetMachine &TM,
   }
 
   if (Subtarget.hasStdExtZpn()) {
+
+    cout<<"HasStdExtZpn";
     const auto addTypeForP = [&](MVT VT, MVT PromotedBitwiseVT) {
       // Expand all builtin opcodes.
       for (unsigned Opc = 0; Opc < ISD::BUILTIN_OP_END; ++Opc)
@@ -964,12 +975,68 @@ RISCVTargetLowering::RISCVTargetLowering(const TargetMachine &TM,
     };
 
     if (Subtarget.is64Bit()) {
+      
       addTypeForP(MVT::v8i8, MVT::i64);
       addTypeForP(MVT::v4i16, MVT::i64);
       addTypeForP(MVT::v2i32, MVT::i64);
+      
     } else {
+      
       addTypeForP(MVT::v4i8, MVT::i32);
       addTypeForP(MVT::v2i16, MVT::i32);
+      
+    }
+
+    //Add pattern matching for 64 and 32 bit respectively
+    if (Subtarget.is64Bit()){
+      
+      // 8 bit
+      setOperationAction(ISD::ADD, MVT::v8i8, Legal);
+      setOperationAction(ISD::AVGFLOORS, MVT::v8i8, Legal);
+      setOperationAction(ISD::AVGFLOORU, MVT::v8i8, Legal);
+      setOperationAction(ISD::SADDSAT, MVT::v8i8, Legal);
+      setOperationAction(ISD::UADDSAT, MVT::v8i8, Legal);
+      setOperationAction(ISD::SUB, MVT::v8i8, Legal);
+      setOperationAction(ISD::SSUBSAT, MVT::v8i8, Legal);
+      setOperationAction(ISD::USUBSAT, MVT::v8i8, Legal);
+
+      // 16 bit
+      setOperationAction(ISD::ADD, MVT::v4i16, Legal);
+      setOperationAction(ISD::AVGFLOORS, MVT::v4i16, Legal);
+      setOperationAction(ISD::AVGFLOORU, MVT::v4i16, Legal);
+      setOperationAction(ISD::SADDSAT, MVT::v4i16, Legal);
+      setOperationAction(ISD::UADDSAT, MVT::v4i16, Legal);
+      setOperationAction(ISD::SUB, MVT::v4i16, Legal);
+      setOperationAction(ISD::SSUBSAT, MVT::v4i16, Legal);
+      setOperationAction(ISD::USUBSAT, MVT::v4i16, Legal);
+      
+    }
+    else{
+      
+      // 8 bit
+      setOperationAction(ISD::ADD, MVT::v4i8, Legal);
+      setOperationAction(ISD::AVGFLOORS, MVT::v4i8, Legal);
+      setOperationAction(ISD::AVGFLOORU, MVT::v4i8, Legal);
+      setOperationAction(ISD::SADDSAT, MVT::v4i8, Legal);
+      setOperationAction(ISD::UADDSAT, MVT::v4i8, Legal);
+      setOperationAction(ISD::SUB, MVT::v4i8, Legal);
+      setOperationAction(ISD::SSUBSAT, MVT::v4i8, Legal);
+      setOperationAction(ISD::USUBSAT, MVT::v4i8, Legal);
+
+      // 16 bit
+      setOperationAction(ISD::ADD, MVT::v2i16, Legal);
+      setOperationAction(ISD::AVGFLOORS, MVT::v2i16, Legal);
+      setOperationAction(ISD::AVGFLOORU, MVT::v2i16, Legal);
+      setOperationAction(ISD::SADDSAT, MVT::v2i16, Legal);
+      setOperationAction(ISD::UADDSAT, MVT::v2i16, Legal);
+      setOperationAction(ISD::SUB, MVT::v2i16, Legal);
+      setOperationAction(ISD::SSUBSAT, MVT::v2i16, Legal);
+      setOperationAction(ISD::USUBSAT, MVT::v2i16, Legal);
+
+      setOperationAction(ISD::MUL, MVT::v4i8, Legal);
+      setOperationAction(ISD::MULHU, MVT::v4i8, Legal);
+      setOperationAction(ISD::SMUL_LOHI, MVT::v4i8, Legal);
+      
     }
 
     // Expand all truncating stores and extending loads.
@@ -1021,6 +1088,8 @@ RISCVTargetLowering::RISCVTargetLowering(const TargetMachine &TM,
 
   setLibcallName(RTLIB::FPEXT_F16_F32, "__extendhfsf2");
   setLibcallName(RTLIB::FPROUND_F32_F16, "__truncsfhf2");
+
+  
 }
 
 EVT RISCVTargetLowering::getSetCCResultType(const DataLayout &DL,

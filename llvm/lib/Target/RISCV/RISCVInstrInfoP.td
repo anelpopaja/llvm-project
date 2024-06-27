@@ -1194,7 +1194,131 @@ def : RVPTernaryINSBIntPat<INSB, "insb">;
 
 
 
-//add 8 pattern match
+//RV32 pattern match
+
+// addition
 
 def : Pat<(add (v4i8 GPR:$rs1), (v4i8 GPR:$rs2)),
           (ADD8 GPR:$rs1, GPR:$rs2)>;
+def : Pat<(add (v2i16 GPR:$rs1), (v2i16 GPR:$rs2)),
+          (ADD16 GPR:$rs1, GPR:$rs2)>;
+
+// 8-bit Signed Halving Addition
+def : Pat<(avgfloors (v4i8 GPR:$rs1), (v4i8 GPR:$rs2)),
+          (RADD8 GPR:$rs1, GPR:$rs2)>;
+def : Pat<(avgfloors (v2i16 GPR:$rs1), (v2i16 GPR:$rs2)),
+          (RADD16 GPR:$rs1, GPR:$rs2)>;
+
+//8-bit Unsigned Halving Addition
+def : Pat<(avgflooru (v4i8 GPR:$rs1), (v4i8 GPR:$rs2)),
+          (URADD8 GPR:$rs1, GPR:$rs2)>;
+def : Pat<(avgflooru (v2i16 GPR:$rs1), (v2i16 GPR:$rs2)),
+          (URADD16 GPR:$rs1, GPR:$rs2)>;
+
+// 8-bit Signed Saturating Addition
+def : Pat<(saddsat (v4i8 GPR:$rs1), (v4i8 GPR:$rs2)),
+          (KADD8 GPR:$rs1, GPR:$rs2)>;
+def : Pat<(saddsat (v2i16 GPR:$rs1), (v2i16 GPR:$rs2)),
+          (KADD16 GPR:$rs1, GPR:$rs2)>;
+
+// 8-bit Unsigned Saturating Addition
+def : Pat<(uaddsat (v4i8 GPR:$rs1), (v4i8 GPR:$rs2)),
+          (UKADD8 GPR:$rs1, GPR:$rs2)>;
+def : Pat<(uaddsat (v2i16 GPR:$rs1), (v2i16 GPR:$rs2)),
+          (UKADD16 GPR:$rs1, GPR:$rs2)>;
+
+// subtraction
+
+def : Pat<(sub (v4i8 GPR:$rs1), (v4i8 GPR:$rs2)),
+          (SUB8 GPR:$rs1, GPR:$rs2)>;
+def : Pat<(sub (v2i16 GPR:$rs1), (v2i16 GPR:$rs2)),
+          (SUB16 GPR:$rs1, GPR:$rs2)>;
+
+// 8-bit Signed Halving Subtraction
+// missing
+
+// 8-bit Signed Saturating Subtraction
+def : Pat<(ssubsat (v4i8 GPR:$rs1), (v4i8 GPR:$rs2)),
+          (KSUB8 GPR:$rs1, GPR:$rs2)>;
+def : Pat<(ssubsat (v2i16 GPR:$rs1), (v2i16 GPR:$rs2)),
+          (KSUB16 GPR:$rs1, GPR:$rs2)>;
+
+// 8-bit Unsigned Saturating Subtraction
+def : Pat<(usubsat (v4i8 GPR:$rs1), (v4i8 GPR:$rs2)),
+          (UKSUB8 GPR:$rs1, GPR:$rs2)>;
+def : Pat<(usubsat (v2i16 GPR:$rs1), (v2i16 GPR:$rs2)),
+          (UKSUB16 GPR:$rs1, GPR:$rs2)>;
+
+
+// 16-bit Cross Add & Sub and its subcategories (missing)
+
+         
+
+
+// shift instructions
+
+// compare 
+// postoji SETCC
+// kako proslijediti "condition?"
+
+
+// SMUL8 rd, rs1, rs2
+// def : Pat<(mul (v4i8 GPR:$rs1), (v4i8 GPR:$rs2)),
+//           (SMUL8_32 GPR:$rs1, GPR:$rs2)>;
+
+
+
+// RV64 pattern match
+
+// addition
+
+def : Pat<(add (v8i8 GPR:$rs1), (v8i8 GPR:$rs2)),
+          (ADD8 GPR:$rs1, GPR:$rs2)>;
+def : Pat<(add (v4i16 GPR:$rs1), (v4i16 GPR:$rs2)),
+          (ADD16 GPR:$rs1, GPR:$rs2)>;
+
+// 8-bit Signed Halving Addition
+def : Pat<(avgfloors (v8i8 GPR:$rs1), (v8i8 GPR:$rs2)),
+          (RADD8 GPR:$rs1, GPR:$rs2)>;
+def : Pat<(avgfloors (v4i16 GPR:$rs1), (v4i16 GPR:$rs2)),
+          (RADD16 GPR:$rs1, GPR:$rs2)>;
+
+//8-bit Unsigned Halving Addition
+def : Pat<(avgflooru (v8i8 GPR:$rs1), (v8i8 GPR:$rs2)),
+          (URADD8 GPR:$rs1, GPR:$rs2)>;
+def : Pat<(avgflooru (v4i16 GPR:$rs1), (v4i16 GPR:$rs2)),
+          (URADD16 GPR:$rs1, GPR:$rs2)>;
+
+// 8-bit Signed Saturating Addition
+def : Pat<(saddsat (v8i8 GPR:$rs1), (v8i8 GPR:$rs2)),
+          (KADD8 GPR:$rs1, GPR:$rs2)>;
+def : Pat<(saddsat (v4i16 GPR:$rs1), (v4i16 GPR:$rs2)),
+          (KADD16 GPR:$rs1, GPR:$rs2)>;
+
+// 8-bit Unsigned Saturating Addition
+def : Pat<(uaddsat (v8i8 GPR:$rs1), (v8i8 GPR:$rs2)),
+          (UKADD8 GPR:$rs1, GPR:$rs2)>;
+def : Pat<(uaddsat (v4i16 GPR:$rs1), (v4i16 GPR:$rs2)),
+          (UKADD16 GPR:$rs1, GPR:$rs2)>;
+
+// subtraction
+
+def : Pat<(sub (v8i8 GPR:$rs1), (v8i8 GPR:$rs2)),
+          (SUB8 GPR:$rs1, GPR:$rs2)>;
+def : Pat<(sub (v4i16 GPR:$rs1), (v4i16 GPR:$rs2)),
+          (SUB16 GPR:$rs1, GPR:$rs2)>;
+
+// 8-bit Signed Halving Subtraction
+// missing
+
+// 8-bit Signed Saturating Subtraction
+def : Pat<(ssubsat (v8i8 GPR:$rs1), (v8i8 GPR:$rs2)),
+          (KSUB8 GPR:$rs1, GPR:$rs2)>;
+def : Pat<(ssubsat (v4i16 GPR:$rs1), (v4i16 GPR:$rs2)),
+          (KSUB16 GPR:$rs1, GPR:$rs2)>;
+
+// 8-bit Unsigned Saturating Subtraction
+def : Pat<(usubsat (v8i8 GPR:$rs1), (v8i8 GPR:$rs2)),
+          (UKSUB8 GPR:$rs1, GPR:$rs2)>;
+def : Pat<(usubsat (v4i16 GPR:$rs1), (v4i16 GPR:$rs2)),
+          (UKSUB16 GPR:$rs1, GPR:$rs2)>;
