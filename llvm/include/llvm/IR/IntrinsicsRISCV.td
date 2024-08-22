@@ -87,6 +87,11 @@ let TargetPrefix = "riscv" in {
       : DefaultAttrsIntrinsic<[llvm_any_ty],
                               [LLVMMatchType<0>, LLVMMatchType<0>],
                               [IntrNoMem, IntrSpeculatable]>;
+  
+  class BitManipGPRGPRGPRIntrinsics
+      : DefaultAttrsIntrinsic<[llvm_any_ty],
+                              [LLVMMatchType<0>, LLVMMatchType<0>, LLVMMatchType<0>],
+                              [IntrNoMem, IntrSpeculatable, IntrWillReturn]>;
 
   // Zbb
   def int_riscv_orc_b : BitManipGPRIntrinsics;
@@ -106,6 +111,15 @@ let TargetPrefix = "riscv" in {
   // Zbkx
   def int_riscv_xperm4  : BitManipGPRGPRIntrinsics;
   def int_riscv_xperm8  : BitManipGPRGPRIntrinsics;
+
+  // Zbpbo
+  def int_riscv_fsl : BitManipGPRGPRGPRIntrinsics;
+  def int_riscv_fsr : BitManipGPRGPRGPRIntrinsics;
+  def int_riscv_grev  : BitManipGPRGPRIntrinsics;
+  def int_riscv_gorc  : BitManipGPRGPRIntrinsics;
+  def int_riscv_shfl  : BitManipGPRGPRIntrinsics;
+  def int_riscv_unshfl  : BitManipGPRGPRIntrinsics;
+
 } // TargetPrefix = "riscv"
 
 //===----------------------------------------------------------------------===//

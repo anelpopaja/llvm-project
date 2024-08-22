@@ -132,6 +132,24 @@ enum NodeType : unsigned {
   // brev8, orc.b, zip, and unzip from Zbb and Zbkb. All operands are i32 or
   // XLenVT.
   BREV8,
+  GREV,
+  GREVW,
+  GORC,
+  GORCW,
+  SHFL,
+  SHFLW,
+  UNSHFL,
+  UNSHFLW,
+  
+  // RV64IB/RV32IB funnel shifts, with the semantics of the named RISC-V
+  // instructions. Operand order is rs1, rs3, rs2/shamt.
+  FSR,
+  FSL,
+  // RV64IB funnel shifts, with the semantics of the named RISC-V instructions.
+  // Operand order is rs1, rs3, rs2/shamt.
+  FSRW,
+  FSLW,
+
   ORC_B,
   ZIP,
   UNZIP,

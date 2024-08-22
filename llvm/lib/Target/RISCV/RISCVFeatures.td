@@ -633,6 +633,29 @@ def HasStdExtP : Predicate<"Subtarget->hasStdExtP()">,
                            AssemblerPredicate<(all_of FeatureStdExtP),
                            "'P' (Packed-SIMD Instructions)">;
 
+def FeatureStdExtZbpbo
+    : SubtargetFeature<"experimental-zbpbo", "HasStdExtZbpbo", "true",
+                       "'Zbpbo' ('B' & 'P' Overlay Instructions)">;
+def HasStdExtZbpbo
+    : Predicate<"Subtarget->hasStdExtZbpbo()">,
+                             AssemblerPredicate<(all_of FeatureStdExtZbpbo),
+                             "'Zbpbo' ('B' & 'P' Overlay Instructions)">;
+
+def HasStdExtZbbOrZbpbo
+    : Predicate<"Subtarget->hasStdExtZbb() || Subtarget->hasStdExtZbpbo()">,
+                AssemblerPredicate<(any_of FeatureStdExtZbb, FeatureStdExtZbpbo),
+                                   "'Zbb' (Basic Bit-Manipulation) or "
+                                   "'Zbpbo' ('B' & 'P' Overlay Instructions)">;
+
+
+
+def HasStdExtZbkbOrZbpbo
+    : Predicate<"Subtarget->hasStdExtZbkb() || Subtarget->hasStdExtZbpbo()">,
+                AssemblerPredicate<(any_of FeatureStdExtZbkb, FeatureStdExtZbpbo),
+                                   "'Zbkb' (Bitmanip instructions for Cryptography) or "
+                                   "'Zbpbo' ('B' & 'P' Overlay Instructions)">;
+
+
 // Vector Cryptography and Bitmanip Extensions
 
 def FeatureStdExtZvkb

@@ -18,7 +18,7 @@
 // Zbb extension
 TARGET_BUILTIN(__builtin_riscv_orc_b_32, "UiUi", "nc", "zbb")
 TARGET_BUILTIN(__builtin_riscv_orc_b_64, "UWiUWi", "nc", "zbb,64bit")
-TARGET_BUILTIN(__builtin_riscv_clz_32, "UiUi", "nc", "zbb|xtheadbb")
+TARGET_BUILTIN(__builtin_riscv_clz_32, "UiUi", "nc", "zbb|xtheadbb|experimental-zbpbo")
 TARGET_BUILTIN(__builtin_riscv_clz_64, "UiUWi", "nc", "zbb|xtheadbb,64bit")
 TARGET_BUILTIN(__builtin_riscv_ctz_32, "UiUi", "nc", "zbb")
 TARGET_BUILTIN(__builtin_riscv_ctz_64, "UiUWi", "nc", "zbb,64bit")
@@ -36,6 +36,20 @@ TARGET_BUILTIN(__builtin_riscv_xperm4_32, "UiUiUi", "nc", "zbkx,32bit")
 TARGET_BUILTIN(__builtin_riscv_xperm4_64, "UWiUWiUWi", "nc", "zbkx,64bit")
 TARGET_BUILTIN(__builtin_riscv_xperm8_32, "UiUiUi", "nc", "zbkx,32bit")
 TARGET_BUILTIN(__builtin_riscv_xperm8_64, "UWiUWiUWi", "nc", "zbkx,64bit")
+
+// Zbpbo extension
+TARGET_BUILTIN(__builtin_riscv_fsl_32, "LiLiLiLi", "nc", "experimental-zbpbo")
+TARGET_BUILTIN(__builtin_riscv_fsr_32, "LiLiLiLi", "nc", "experimental-zbpbo")
+TARGET_BUILTIN(__builtin_riscv_fsl_64, "WiWiWiWi", "nc", "experimental-zbpbo,64bit")
+TARGET_BUILTIN(__builtin_riscv_fsr_64, "WiWiWiWi", "nc", "experimental-zbpbo,64bit")
+TARGET_BUILTIN(__builtin_riscv_grev_32, "ZiZiZi", "nc", "experimental-zbpbo")
+TARGET_BUILTIN(__builtin_riscv_grev_64, "WiWiWi", "nc", "experimental-zbpbo,64bit")
+TARGET_BUILTIN(__builtin_riscv_gorc_32, "ZiZiZi", "nc", "experimental-zbpbo")
+TARGET_BUILTIN(__builtin_riscv_gorc_64, "WiWiWi", "nc", "experimental-zbpbo,64bit")
+TARGET_BUILTIN(__builtin_riscv_shfl_32, "ZiZiZi", "nc", "experimental-zbpbo")
+TARGET_BUILTIN(__builtin_riscv_shfl_64, "WiWiWi", "nc", "experimental-zbpbo,64bit")
+TARGET_BUILTIN(__builtin_riscv_unshfl_32, "ZiZiZi", "nc", "experimental-zbpbo")
+TARGET_BUILTIN(__builtin_riscv_unshfl_64, "WiWiWi", "nc", "experimental-zbpbo,64bit")
 
 // Zbkb extension
 TARGET_BUILTIN(__builtin_riscv_brev8_32, "UiUi", "nc", "zbkb")

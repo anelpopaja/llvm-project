@@ -44,6 +44,14 @@ def WriteZIP         : SchedWrite; // zip/unzip
 // Zbkx extension
 def WriteXPERM       : SchedWrite; // xperm4/xperm8
 
+// Zbpbo extension
+def WriteREVImm      : SchedWrite; // grevi
+def WriteCMix        : SchedWrite; // cmix
+def WriteFSReg       : SchedWrite; // fsr
+def WriteFSRImm      : SchedWrite; // fsri
+def WriteFSReg32     : SchedWrite; // fsrw
+def WritePACKU       : SchedWrite; // packu
+
 /// Define scheduler resources associated with use operands.
 
 // Zba extension
@@ -79,6 +87,14 @@ def ReadZIP         : SchedRead; // zip/unzip
 
 // Zbkx extension
 def ReadXPERM       : SchedRead; // xperm4/xperm8
+
+// Zbpbo extension
+def ReadREVImm      : SchedRead; // grevi
+def ReadCMix        : SchedRead; // cmix
+def ReadFSReg       : SchedRead; // fsr
+def ReadFSRImm      : SchedRead; // fsri
+def ReadFSReg32     : SchedRead; // fsrw
+def ReadPACKU       : SchedRead; // packu
 
 /// Define default scheduler resources for B.
 
@@ -161,5 +177,23 @@ let Unsupported = true in {
 def : WriteRes<WriteXPERM, []>;
 
 def : ReadAdvance<ReadXPERM, 0>;
+}
+}
+
+multiclass UnsupportedSchedZbpbo {
+let Unsupported = true in {
+def : WriteRes<WriteREVImm, []>;
+def : WriteRes<WriteCMix, []>;
+def : WriteRes<WriteFSReg, []>;
+def : WriteRes<WriteFSRImm, []>;
+def : WriteRes<WriteFSReg32, []>;
+def : WriteRes<WritePACKU, []>;
+
+def : ReadAdvance<ReadREVImm, 0>;
+def : ReadAdvance<ReadCMix, 0>;
+def : ReadAdvance<ReadFSReg, 0>;
+def : ReadAdvance<ReadFSRImm, 0>;
+def : ReadAdvance<ReadFSReg32, 0>;
+def : ReadAdvance<ReadPACKU, 0>;
 }
 }

@@ -39,6 +39,7 @@
 ; RUN: llc -mtriple=riscv32 -mattr=+zicboz %s -o - | FileCheck --check-prefixes=CHECK,RV32ZICBOZ %s
 ; RUN: llc -mtriple=riscv32 -mattr=+zicbop %s -o - | FileCheck --check-prefixes=CHECK,RV32ZICBOP %s
 ; RUN: llc -mtriple=riscv32 -mattr=+experimental-p %s -o - | FileCheck --check-prefixes=CHECK,RV32P %s
+; RUN: llc -mtriple=riscv32 -mattr=+experimental-zbpbo %s -o - | FileCheck --check-prefix=RV32ZBPBO %s
 ; RUN: llc -mtriple=riscv32 -mattr=+experimental-zpn %s -o - | FileCheck --check-prefixes=CHECK,RV32ZPN %s
 ; RUN: llc -mtriple=riscv32 -mattr=+experimental-zpsfoperand %s -o - | FileCheck --check-prefixes=CHECK,RV32ZPSFOPERAND %s
 ; RUN: llc -mtriple=riscv32 -mattr=+svnapot %s -o - | FileCheck --check-prefixes=CHECK,RV32SVNAPOT %s
@@ -139,6 +140,7 @@
 ; RUN: llc -mtriple=riscv64 -mattr=+zicboz %s -o - | FileCheck --check-prefixes=CHECK,RV64ZICBOZ %s
 ; RUN: llc -mtriple=riscv64 -mattr=+zicbop %s -o - | FileCheck --check-prefixes=CHECK,RV64ZICBOP %s
 ; RUN: llc -mtriple=riscv64 -mattr=+experimental-p %s -o - | FileCheck --check-prefixes=CHECK,RV64P %s
+; RUN: llc -mtriple=riscv64 -mattr=+experimental-zbpbo %s -o - | FileCheck --check-prefix=RV64ZBPBO %s
 ; RUN: llc -mtriple=riscv64 -mattr=+experimental-zpn %s -o - | FileCheck --check-prefixes=CHECK,RV64ZPN %s
 ; RUN: llc -mtriple=riscv64 -mattr=+experimental-zpsfoperand %s -o - | FileCheck --check-prefixes=CHECK,RV64ZPSFOPERAND %s
 ; RUN: llc -mtriple=riscv64 -mattr=+svnapot %s -o - | FileCheck --check-prefixes=CHECK,RV64SVNAPOT %s
@@ -244,6 +246,7 @@
 ; RV32ZICBOZ: .attribute 5, "rv32i2p1_zicboz1p0"
 ; RV32ZICBOP: .attribute 5, "rv32i2p1_zicbop1p0"
 ; RV32P: .attribute 5, "rv32i2p1_p0p911_zbpbo0p911_zpn0p911_zpsfoperand0p911"
+; RV32ZBPBO: .attribute 5, "rv32i2p1_zbpbo0p911"
 ; RV32ZPN: .attribute 5, "rv32i2p1_zpn0p911"
 ; RV32ZPSFOPERAND: .attribute 5, "rv32i2p1_zpsfoperand0p911"
 ; RV32SVNAPOT: .attribute 5, "rv32i2p1_svnapot1p0"
@@ -346,6 +349,7 @@
 ; RV64ZAWRS: .attribute 5, "rv64i2p1_zawrs1p0"
 ; RV64ZICBOP: .attribute 5, "rv64i2p1_zicbop1p0"
 ; RV64P: .attribute 5, "rv64i2p1_p0p911_zbpbo0p911_zpn0p911_zpsfoperand0p911"
+; RV64ZBPBO: .attribute 5, "rv64i2p1_zbpbo0p911"
 ; RV64ZPN: .attribute 5, "rv64i2p1_zpn0p911"
 ; RV64ZPSFOPERAND: .attribute 5, "rv64i2p1_zpsfoperand0p911"
 ; RV64SVNAPOT: .attribute 5, "rv64i2p1_svnapot1p0"

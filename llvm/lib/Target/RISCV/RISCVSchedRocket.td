@@ -247,5 +247,6 @@ defm : UnsupportedSchedZbkb;
 defm : UnsupportedSchedZbkx;
 defm : UnsupportedSchedZfa;
 defm : UnsupportedSchedZfh;
+defm : UnsupportedSchedZbpbo;
 defm : UnsupportedSchedSFB;
 }

@@ -21162,7 +21162,19 @@ Value *CodeGenFunction::EmitRISCVBuiltinExpr(unsigned BuiltinID,
   case RISCV::BI__builtin_riscv_brev8_32:
   case RISCV::BI__builtin_riscv_brev8_64:
   case RISCV::BI__builtin_riscv_zip_32:
-  case RISCV::BI__builtin_riscv_unzip_32: {
+  case RISCV::BI__builtin_riscv_unzip_32:
+  case RISCV::BI__builtin_riscv_fsl_32:
+  case RISCV::BI__builtin_riscv_fsr_32:
+  case RISCV::BI__builtin_riscv_fsl_64:
+  case RISCV::BI__builtin_riscv_fsr_64: 
+  case RISCV::BI__builtin_riscv_grev_32:
+  case RISCV::BI__builtin_riscv_grev_64:
+  case RISCV::BI__builtin_riscv_gorc_32:
+  case RISCV::BI__builtin_riscv_gorc_64:
+  case RISCV::BI__builtin_riscv_shfl_32:
+  case RISCV::BI__builtin_riscv_shfl_64:
+  case RISCV::BI__builtin_riscv_unshfl_32:
+  case RISCV::BI__builtin_riscv_unshfl_64:{
     switch (BuiltinID) {
     default: llvm_unreachable("unexpected builtin ID");
     // Zbb
@@ -21223,6 +21235,32 @@ Value *CodeGenFunction::EmitRISCVBuiltinExpr(unsigned BuiltinID,
       break;
     case RISCV::BI__builtin_riscv_unzip_32:
       ID = Intrinsic::riscv_unzip;
+      break;
+
+    // Zbpbo
+    case RISCV::BI__builtin_riscv_fsl_32:
+    case RISCV::BI__builtin_riscv_fsl_64:
+      ID = Intrinsic::riscv_fsl;
+      break;
+    case RISCV::BI__builtin_riscv_fsr_32:
+    case RISCV::BI__builtin_riscv_fsr_64:
+      ID = Intrinsic::riscv_fsr;
+      break;
+    case RISCV::BI__builtin_riscv_grev_32:
+    case RISCV::BI__builtin_riscv_grev_64:
+      ID = Intrinsic::riscv_grev;
+      break;
+    case RISCV::BI__builtin_riscv_gorc_32:
+    case RISCV::BI__builtin_riscv_gorc_64:
+      ID = Intrinsic::riscv_gorc;
+      break;
+    case RISCV::BI__builtin_riscv_shfl_32:
+    case RISCV::BI__builtin_riscv_shfl_64:
+      ID = Intrinsic::riscv_shfl;
+      break;
+    case RISCV::BI__builtin_riscv_unshfl_32:
+    case RISCV::BI__builtin_riscv_unshfl_64:
+      ID = Intrinsic::riscv_unshfl;
       break;
     }
 

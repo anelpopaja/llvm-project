@@ -709,6 +709,7 @@ enum NodeType {
   ROTR,
   FSHL,
   FSHR,
+  FSR,
 
   /// Byte Swap and Counting operators.
   BSWAP,
